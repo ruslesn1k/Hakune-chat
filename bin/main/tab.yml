@@ -1,0 +1,16 @@
+tab:
+  enabled: true
+  update-interval-seconds: 2
+  header:
+    - " "
+    - "&fWelcome, &a{player}&f!"
+    - ""
+  footer:
+    - ""
+    - "&7Online: &f%server_online%"
+    - " "
+  player-format: "{head} &f{player}"
+  group-placeholder: "%luckperms_primary_group_name%"
+  sorting-types:
+    - "GROUPS:owner,admin,mod,helper,builder,vip,default"
+    - "PLACEHOLDER_A_TO_Z:%player%"

@@ -1,0 +1,16 @@
+chat:
+  formats:
+    java:
+      local: "{head}&7[&aL&7] &f{player}&7: &f{message}"
+      global: "{head}&7[&bG&7] &f{player}&7: &f{message}"
+    bedrock:
+      local: "{head}&7[&aL&7] &f{player}&7: &f{message}"
+      global: "{head}&7[&bG&7] &f{player}&7: &f{message}"
+join:
+  formats:
+    java: "{head}&a+ &f{player}"
+    bedrock: "{head}&a+ &f{player}"
+quit:
+  formats:
+    java: "{head}&c- &f{player}"
+    bedrock: "{head}&c- &f{player}"

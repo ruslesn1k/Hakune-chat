@@ -1,0 +1,23 @@
+name: HakuneChat
+version: 1.0.0
+main: com.hakune.chat.HakuneChatPlugin
+api-version: '1.21'
+load: POSTWORLD
+softdepend:
+  - PlaceholderAPI
+  - floodgate
+  - SkinsRestorer
+  - Geyser-Spigot
+commands:
+  chatreload:
+    description: Reload HakuneChat config
+    permission: hakunechat.reload
+  hakunechat:
+    description: HakuneChat main command
+    aliases:
+      - hchat
+    permission: hakunechat.reload
+permissions:
+  hakunechat.reload:
+    description: Allows reloading HakuneChat config
+    default: op

@@ -1,0 +1,72 @@
+# ------------------------------
+# ЧАТ / CHAT
+# Настройки локального и глобального чата / Local & global chat settings
+# ------------------------------
+chat:
+  # Дальность локального чата (в блоках) / Local chat distance (blocks)
+  local-distance: 100.0
+  # Символ для глобального чата / Prefix symbol for global chat
+  global-symbol: "!"
+
+# ------------------------------
+# ФУНКЦИИ / FEATURES
+# Переключатели поведения / Feature toggles
+# ------------------------------
+features:
+  # Разные форматы для Bedrock и Java (по получателю) / Separate formats for Bedrock & Java (per viewer)
+  separate-bedrock-format: true
+  # Использовать головы через SkinRestorer / Use heads via SkinRestorer
+  skinrestorer-heads: true
+  # Интервал обновления голов (сек) / Head refresh interval (seconds)
+  skinrestorer-refresh-seconds: 60
+  # Режим обновления голов / Head update mode
+  # interval = по таймеру / by timer
+  # command = по командам / by commands
+  # both = таймер + команды / timer + commands
+  skinrestorer-update-mode: "interval"
+  # Команды, которые триггерят обновление / Commands that trigger update
+  skinrestorer-command-triggers:
+    - "/skin"
+    - "/sr"
+  # Сообщение входа / Join message
+  join-message-enabled: true
+  # Сообщение выхода / Quit message
+  quit-message-enabled: true
+
+# ------------------------------
+# TELEGRAM
+# Мост чата / Chat bridge
+# ------------------------------
+telegram:
+  # Включить мост / Enable bridge
+  enabled: false
+  # Токен бота / Bot token
+  token: "PASTE_BOT_TOKEN"
+  # ID чата / Chat ID
+  chat-id: "PASTE_CHAT_ID"
+  # Интервал опроса (сек) / Poll interval (seconds)
+  poll-interval-seconds: 5
+  # Формат сообщения из Minecraft -> Telegram / Format from Minecraft to Telegram
+  format-to-telegram: "[{type}] {player}: {message}"
+  # Формат сообщения из Telegram -> Minecraft / Format from Telegram to Minecraft
+  format-from-telegram: "&7[&dTG&7] &f{user}&7: &f{message}"
+
+# ------------------------------
+# BEDROCK SKINS
+# Скины для Bedrock игроков на offline сервере / Bedrock skins on offline server
+# ------------------------------
+bedrock-skins:
+  # Включить модуль / Enable module
+  enabled: true
+  # Режим обновления / Update mode (interval | command | both)
+  update-mode: "interval"
+  # Интервал обновления (сек) / Update interval (seconds)
+  update-interval-seconds: 60
+  # Команды, которые триггерят обновление / Commands that trigger update
+  command-triggers:
+    - "/skin"
+    - "/sr"
+  # Применять скин к игроку сразу / Apply skin to player immediately
+  apply-to-players: true
+  # Использовать скин для голов / Use bedrock skin for heads
+  use-for-heads: true
