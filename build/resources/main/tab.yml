@@ -9,7 +9,10 @@ tab:
     - ""
     - "&7Online: &f%server_online%"
     - " "
-  player-format: "{head}&f{player}"
+  player-format: "{head} {voice} {player}"
+  name-tag:
+    enabled: false
+    format: "{player}"
   group-placeholder: "%luckperms_primary_group_name%"
   sorting-types:
     - "GROUPS:owner,admin,mod,helper,builder,vip,default"

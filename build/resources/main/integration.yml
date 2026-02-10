@@ -1,0 +1,43 @@
+integration:
+  telegram:
+    enabled: false
+    token: "PASTE_BOT_TOKEN"
+    chat-id: "PASTE_CHAT_ID"
+    poll-interval-seconds: 5
+    format-to-telegram: "[{type}] {player}: {message}"
+    format-from-telegram: "&7[&dTG&7] &f{user}&7: &f{message}"
+  discord:
+    enabled: false
+    webhook-url: ""
+    bot-token: ""
+    channel-id: ""
+    poll-interval-seconds: 5
+    format-to-discord: "[{type}] {player}: {message}"
+    format-from-discord: "&7[&9DC&7] &f{user}&7: &f{message}"
+  notifications:
+    enabled: false
+    poll-interval-seconds: 60
+    twitch:
+      enabled: false
+      live-regex: '(?i)islivebroadcast|is_live'
+      title-regex: '(?i)"title"\s*:\s*"([^"]+)"'
+      channels:
+        - "example: https://twitch.tv/example"
+    youtube:
+      enabled: false
+      live-regex: '(?i)"isLiveNow"\s*:\s*true|LIVE NOW|is_live'
+      title-regex: '(?i)"title"\s*:\s*"([^"]+)"'
+      channels:
+        - "example: https://www.youtube.com/@example/live"
+    tiktok:
+      enabled: false
+      live-regex: '(?i)live now|"status"\s*:\s*2|isLive'
+      title-regex: '(?i)"title"\s*:\s*"([^"]+)"'
+      channels:
+        - "example: https://www.tiktok.com/@example/live"
+    vklive:
+      enabled: false
+      live-regex: '(?i)live|pryamoy\s*efir'
+      title-regex: '(?i)"title"\s*:\s*"([^"]+)"'
+      channels:
+        - "example: https://live.vkvideo.ru/example"

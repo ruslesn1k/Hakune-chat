@@ -34,6 +34,16 @@ features:
   quit-message-enabled: true
 
 # ------------------------------
+# MOTD
+# Message shown in server list
+# ------------------------------
+motd:
+  enabled: true
+  lines:
+    - "&aHakune"
+    - "&7Welcome to the server"
+
+# ------------------------------
 # TELEGRAM
 # Мост чата / Chat bridge
 # ------------------------------
@@ -70,3 +80,27 @@ bedrock-skins:
   apply-to-players: true
   # Использовать скин для голов / Use bedrock skin for heads
   use-for-heads: true
+
+# ------------------------------
+# VOICE INDICATOR
+# Индикатор мода PlasmoVoice / PlasmoVoice indicator
+# ------------------------------
+voice-indicator:
+  # Включить индикатор / Enable indicator
+  enabled: true
+  # Текст для игроков с модом / Text for players with the mod
+  on: "&a[VC]"
+  # Текст для игроков без мода / Text for players without the mod
+  off: "&c[NO]"
+
+# ------------------------------
+# MINIGAMES
+# Мини-игры / Mini games
+# ------------------------------
+minigames:
+  # Включить крестики-нолики / Enable tic-tac-toe
+  ttt-enabled: true
+  # Время жизни приглашения (сек) / Invite TTL (seconds)
+  ttt-invite-ttl-seconds: 60
+minigames:
+  ttt-enabled: true
