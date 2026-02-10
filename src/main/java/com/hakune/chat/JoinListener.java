@@ -113,9 +113,11 @@ public final class JoinListener implements Listener {
 
         String formatted = plugin.getPlaceholderHook().apply(subject, template);
         formatted = normalizeHex(formatted)
-            .replace("{player}", subject.getName())
+            .replace("{voice}", plugin.getVoiceDetector().getVoiceIndicator(subject))
             .replace("{world}", subject.getWorld().getName());
 
-        return buildComponentWithHead(formatted, headComponent);
+        Component component = buildComponentWithHead(formatted, headComponent);
+        return component.replaceText(builder -> builder.matchLiteral("{player}")
+            .replacement(plugin.getStyledNameComponent(subject)));
     }
 }

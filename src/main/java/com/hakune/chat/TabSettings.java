@@ -10,6 +10,8 @@ public final class TabSettings {
     private final String playerFormat;
     private final String groupPlaceholder;
     private final List<String> sortingTypes;
+    private final boolean nameTagEnabled;
+    private final String nameTagFormat;
 
     public TabSettings(
         boolean enabled,
@@ -18,7 +20,9 @@ public final class TabSettings {
         List<String> footer,
         String playerFormat,
         String groupPlaceholder,
-        List<String> sortingTypes
+        List<String> sortingTypes,
+        boolean nameTagEnabled,
+        String nameTagFormat
     ) {
         this.enabled = enabled;
         this.updateIntervalSeconds = updateIntervalSeconds;
@@ -27,6 +31,8 @@ public final class TabSettings {
         this.playerFormat = playerFormat;
         this.groupPlaceholder = groupPlaceholder;
         this.sortingTypes = sortingTypes;
+        this.nameTagEnabled = nameTagEnabled;
+        this.nameTagFormat = nameTagFormat;
     }
 
     public boolean isEnabled() {
@@ -55,5 +61,13 @@ public final class TabSettings {
 
     public List<String> getSortingTypes() {
         return sortingTypes;
+    }
+
+    public boolean isNameTagEnabled() {
+        return nameTagEnabled;
+    }
+
+    public String getNameTagFormat() {
+        return nameTagFormat;
     }
 }

@@ -62,27 +62,44 @@ public final class TabManager {
 
         for (Player player : players) {
             updatePlayerName(player);
+            updateNameTag(player);
         }
     }
 
     private void updateHeaderFooter(Player viewer) {
-        String header = joinLines(resolveList(viewer, settings.getHeader()));
-        String footer = joinLines(resolveList(viewer, settings.getFooter()));
+        String header = joinLines(resolveList(viewer, settings.getHeader(), true));
+        String footer = joinLines(resolveList(viewer, settings.getFooter(), true));
         Component headerComponent = LEGACY.deserialize(normalizeHex(header));
         Component footerComponent = LEGACY.deserialize(normalizeHex(footer));
         viewer.sendPlayerListHeaderAndFooter(headerComponent, footerComponent);
     }
 
     private void updatePlayerName(Player player) {
-        String format = resolvePlaceholders(player, settings.getPlayerFormat());
+        String format = resolvePlaceholders(player, settings.getPlayerFormat(), false);
         format = normalizeHex(format);
         Component headComponent = Component.empty();
         if (plugin.getSettings().isSkinRestorerHeads() && plugin.getSkinRestorerHeadHook() != null) {
             headComponent = plugin.getSkinRestorerHeadHook().getHeadComponent(player);
         }
-        Component finalComponent = buildComponentWithHead(format, headComponent)
-            .replaceText(builder -> builder.matchLiteral("{player}").replacement(Component.text(player.getName())));
+        Component finalComponent = buildComponentWithTokens(
+            format,
+            headComponent,
+            plugin.getStyledNameComponent(player)
+        );
         player.playerListName(finalComponent);
+    }
+
+    private void updateNameTag(Player player) {
+        if (!settings.isNameTagEnabled()) {
+            player.customName(null);
+            player.setCustomNameVisible(false);
+            return;
+        }
+        String format = resolvePlaceholders(player, settings.getNameTagFormat(), false);
+        format = normalizeHex(format);
+        Component component = buildComponentWithTokens(format, null, plugin.getStyledNameComponent(player));
+        player.customName(component);
+        player.setCustomNameVisible(true);
     }
 
     private Comparator<Player> buildComparator(List<Player> players) {
@@ -107,11 +124,11 @@ public final class TabManager {
         String groupPlaceholder = settings.getGroupPlaceholder();
         for (SortRule rule : rules) {
             if (rule.type == SortType.GROUPS) {
-                String group = resolvePlaceholders(player, groupPlaceholder).toLowerCase(Locale.ROOT);
+                String group = resolvePlaceholders(player, groupPlaceholder, true).toLowerCase(Locale.ROOT);
                 int index = rule.groupOrder.indexOf(group);
                 parts.add(index < 0 ? Integer.MAX_VALUE : index);
             } else if (rule.type == SortType.PLACEHOLDER_A_TO_Z) {
-                String value = resolvePlaceholders(player, rule.placeholder).toLowerCase(Locale.ROOT);
+                String value = resolvePlaceholders(player, rule.placeholder, true).toLowerCase(Locale.ROOT);
                 parts.add(value);
             }
         }
@@ -152,23 +169,26 @@ public final class TabManager {
         return rules;
     }
 
-    private String resolvePlaceholders(Player player, String text) {
+    private String resolvePlaceholders(Player player, String text, boolean replacePlayer) {
         String result = plugin.getPlaceholderHook().apply(player, text);
         if (result == null) {
             return "";
         }
+        if (replacePlayer) {
+            result = result.replace("{player}", player.getName());
+        }
         return result
-            .replace("{player}", player.getName())
-            .replace("{world}", player.getWorld().getName());
+            .replace("{world}", player.getWorld().getName())
+            .replace("{voice}", plugin.getVoiceDetector().getVoiceIndicator(player));
     }
 
-    private List<String> resolveList(Player player, List<String> lines) {
+    private List<String> resolveList(Player player, List<String> lines, boolean replacePlayer) {
         if (lines == null || lines.isEmpty()) {
             return List.of("");
         }
         List<String> result = new ArrayList<>();
         for (String line : lines) {
-            result.add(resolvePlaceholders(player, line));
+            result.add(resolvePlaceholders(player, line, replacePlayer));
         }
         return result;
     }
@@ -202,6 +222,45 @@ public final class TabManager {
             }
             if (i < parts.length - 1 && headComponent != null) {
                 result = result.append(headComponent);
+            }
+        }
+        return result;
+    }
+
+    private static Component buildComponentWithTokens(
+        String formatted,
+        Component headComponent,
+        Component playerComponent
+    ) {
+        if (formatted == null) {
+            return Component.empty();
+        }
+        if (!formatted.contains("{head}") && !formatted.contains("{player}")) {
+            return LEGACY.deserialize(formatted);
+        }
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\{head\\}|\\{player\\})");
+        java.util.regex.Matcher matcher = pattern.matcher(formatted);
+        int last = 0;
+        Component result = Component.empty();
+        while (matcher.find()) {
+            if (matcher.start() > last) {
+                String part = formatted.substring(last, matcher.start());
+                if (!part.isEmpty()) {
+                    result = result.append(LEGACY.deserialize(part));
+                }
+            }
+            String token = matcher.group(1);
+            if ("{head}".equals(token) && headComponent != null) {
+                result = result.append(headComponent);
+            } else if ("{player}".equals(token) && playerComponent != null) {
+                result = result.append(playerComponent);
+            }
+            last = matcher.end();
+        }
+        if (last < formatted.length()) {
+            String tail = formatted.substring(last);
+            if (!tail.isEmpty()) {
+                result = result.append(LEGACY.deserialize(tail));
             }
         }
         return result;

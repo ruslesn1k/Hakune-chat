@@ -1,16 +1,32 @@
 chat:
   formats:
     java:
-      local: "{head}&7[&aL&7] &f{player}&7: &f{message}"
-      global: "{head}&7[&bG&7] &f{player}&7: &f{message}"
+      local: "&7[&aL&7] &r{head} &f{player}&7: &f{message}"
+      global: "&7[&bG&7] &r{head} &f{player}&7: &f{message}"
     bedrock:
-      local: "{head}&7[&aL&7] &f{player}&7: &f{message}"
-      global: "{head}&7[&bG&7] &f{player}&7: &f{message}"
+      local: "&7[&aL&7] &f{player}&7: &f{message}"
+      global: "&7[&bG&7] &f{player}&7: &f{message}"
+listenlocal:
+  formats:
+    java: "&7[&eLL&7] &f{player}&7: &f{message}"
+    bedrock: "&7[&eLL&7] &f{player}&7: &f{message}"
 join:
   formats:
-    java: "{head}&a+ &f{player}"
-    bedrock: "{head}&a+ &f{player}"
+    java: "&a+ &r{head} &f{player}"
+    bedrock: "&a+ &f{player}"
 quit:
   formats:
-    java: "{head}&c- &f{player}"
-    bedrock: "{head}&c- &f{player}"
+    java: "&c- &r{head} &f{player}"
+    bedrock: "&c- &f{player}"
+private:
+  formats:
+    java:
+      to: "&7[&dPM&7] &fТы -> {player}&7: &f{message}"
+      from: "&7[&dPM&7] &f{player} -> ТЫ&7: &f{message}"
+    bedrock:
+      to: "&7[&dPM&7] &fТы -> {player}&7: &f{message}"
+      from: "&7[&dPM&7] &f{player} -> ТЫ&7: &f{message}"
+notifications:
+  # Placeholders: {platform} {name} {url} {title}
+  format: "&d[{platform}] &f{name}&7: &b{url}"
+  manual-format: "&d[STREAM] &f{name}&7: &b{url}"

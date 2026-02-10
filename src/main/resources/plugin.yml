@@ -1,5 +1,5 @@
 name: HakuneChat
-version: 1.0.0
+version: 2.0.0
 main: com.hakune.chat.HakuneChatPlugin
 api-version: '1.21'
 load: POSTWORLD
@@ -17,7 +17,46 @@ commands:
     aliases:
       - hchat
     permission: hakunechat.reload
+  listenlocal:
+    description: Toggle local chat listening from anywhere
+    permission: hakune.listenlocal
+  msg:
+    description: Send a private message
+    aliases:
+      - tell
+      - w
+      - pm
+    permission: hakune.pm
+  reply:
+    description: Reply to last private message
+    aliases:
+      - r
+    permission: hakune.pm
+  ttt:
+    description: Tic Tac Toe minigame
+    permission: hakune.ttt
+  stream:
+    description: Send live stream notification
+    permission: hakune.live
+  nickcolor:
+    description: Change nickname color or gradient
+    permission: hakune.nickcolor
 permissions:
   hakunechat.reload:
     description: Allows reloading HakuneChat config
+    default: op
+  hakune.listenlocal:
+    description: Allows listening to all local chat
+    default: op
+  hakune.pm:
+    description: Allows private messages
+    default: true
+  hakune.ttt:
+    description: Allows tic-tac-toe minigame
+    default: true
+  hakune.live:
+    description: Allows sending stream notifications
+    default: op
+  hakune.nickcolor:
+    description: Allows changing nickname colors
     default: op

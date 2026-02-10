@@ -6,6 +6,9 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,6 +76,9 @@ public final class ChatListener implements Listener {
             if (plugin.getTelegramBridge() != null) {
                 plugin.getTelegramBridge().sendFromMinecraft(player, message, true);
             }
+            if (plugin.getDiscordBridge() != null) {
+                plugin.getDiscordBridge().sendFromMinecraft(player, message, true);
+            }
             return;
         }
 
@@ -91,8 +97,12 @@ public final class ChatListener implements Listener {
         }
         Component consoleComponent = buildComponentForViewer(player, null, resolvedMessage, false, headComponent);
         Bukkit.getConsoleSender().sendMessage(consoleComponent);
+        sendListenLocal(player, recipients, resolvedMessage, headComponent);
         if (plugin.getTelegramBridge() != null) {
             plugin.getTelegramBridge().sendFromMinecraft(player, message, false);
+        }
+        if (plugin.getDiscordBridge() != null) {
+            plugin.getDiscordBridge().sendFromMinecraft(player, message, false);
         }
     }
 
@@ -124,6 +134,10 @@ public final class ChatListener implements Listener {
         return result;
     }
 
+    private static Component replacePlayerPlaceholder(Component component, Component playerComponent) {
+        return component.replaceText(builder -> builder.matchLiteral("{player}").replacement(playerComponent));
+    }
+
     private Component buildComponentForViewer(
         Player sender,
         Player viewer,
@@ -140,12 +154,70 @@ public final class ChatListener implements Listener {
 
         String formatted = plugin.getPlaceholderHook().apply(sender, template);
         formatted = normalizeHex(formatted);
+        formatted = formatted.replace("{voice}", plugin.getVoiceDetector().getVoiceIndicator(sender));
 
         formatted = formatted
-            .replace("{player}", sender.getName())
             .replace("{world}", sender.getWorld().getName())
             .replace("{message}", resolvedMessage);
 
-        return buildComponentWithHead(formatted, headComponent);
+        Component component = buildComponentWithHead(formatted, headComponent);
+        Component playerComponent = buildPlayerComponent(viewer, sender);
+        return replacePlayerPlaceholder(component, playerComponent);
+    }
+
+    private void sendListenLocal(Player sender, List<Player> localRecipients, String resolvedMessage, Component headComponent) {
+        ChatSettings settings = plugin.getSettings();
+        java.util.Set<java.util.UUID> localSet = new java.util.HashSet<>();
+        for (Player player : localRecipients) {
+            localSet.add(player.getUniqueId());
+        }
+        for (java.util.UUID uuid : plugin.getListenLocal()) {
+            if (localSet.contains(uuid)) {
+                continue;
+            }
+            Player viewer = Bukkit.getPlayer(uuid);
+            if (viewer == null || !viewer.isOnline()) {
+                continue;
+            }
+            boolean viewerBedrock = plugin.getBedrockDetector().isBedrock(viewer.getUniqueId());
+            String template = (settings.isSeparateBedrockFormat() && viewerBedrock)
+                ? settings.getListenLocalFormatBedrock()
+                : settings.getListenLocalFormatJava();
+
+            String formatted = plugin.getPlaceholderHook().apply(sender, template);
+            formatted = normalizeHex(formatted)
+                .replace("{world}", sender.getWorld().getName())
+                .replace("{message}", resolvedMessage)
+                .replace("{voice}", plugin.getVoiceDetector().getVoiceIndicator(sender));
+
+            Component component = buildComponentWithHead(formatted, headComponent);
+            Component playerComponent = buildPlayerComponent(viewer, sender);
+            component = replacePlayerPlaceholder(component, playerComponent);
+            if (!viewerBedrock) {
+                component = makeLlClickable(component, sender.getName());
+            }
+            viewer.sendMessage(component);
+        }
+    }
+
+    private Component buildPlayerComponent(Player viewer, Player subject) {
+        Component base = plugin.getStyledNameComponent(subject);
+        if (viewer == null) {
+            return base;
+        }
+        boolean viewerBedrock = plugin.getBedrockDetector().isBedrock(viewer.getUniqueId());
+        if (viewerBedrock) {
+            return base;
+        }
+        String name = subject.getName();
+        return base.clickEvent(ClickEvent.suggestCommand("/msg " + name + " "))
+            .hoverEvent(HoverEvent.showText(Component.text("Message " + name).color(NamedTextColor.GRAY)));
+    }
+
+    private Component makeLlClickable(Component component, String playerName) {
+        return component.replaceText(builder -> builder.matchLiteral("[LL]")
+            .replacement(Component.text("[LL]").color(NamedTextColor.YELLOW)
+                .clickEvent(ClickEvent.runCommand("/tp " + playerName))
+                .hoverEvent(HoverEvent.showText(Component.text("Teleport to " + playerName).color(NamedTextColor.GRAY)))));
     }
 }
