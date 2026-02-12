@@ -1,10 +1,13 @@
 name: HakuneChat
-version: 2.0.0
+version: 2.1.0
 main: com.hakune.chat.HakuneChatPlugin
 api-version: '1.21'
 load: POSTWORLD
 softdepend:
   - PlaceholderAPI
+  - PlasmoVoice
+  - SimpleVoiceChat
+  - voicechat
   - floodgate
   - SkinsRestorer
   - Geyser-Spigot
@@ -20,6 +23,9 @@ commands:
   listenlocal:
     description: Toggle local chat listening from anywhere
     permission: hakune.listenlocal
+  msghead:
+    description: Toggle head message display for yourself
+    permission: hakune.msghead
   msg:
     description: Send a private message
     aliases:
@@ -48,6 +54,9 @@ permissions:
   hakune.listenlocal:
     description: Allows listening to all local chat
     default: op
+  hakune.msghead:
+    description: Allows toggling messages above head
+    default: true
   hakune.pm:
     description: Allows private messages
     default: true
