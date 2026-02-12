@@ -10,6 +10,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.scheduler.BukkitTask;
 
 public final class TabManager {
@@ -17,6 +19,8 @@ public final class TabManager {
         .character('&')
         .hexColors()
         .build();
+    private static final LegacyComponentSerializer SECTION = LegacyComponentSerializer.legacySection();
+    private static final String NAME_TAG_TEAM_PREFIX = "hcnt";
 
     private final HakuneChatPlugin plugin;
     private TabSettings settings;
@@ -75,7 +79,7 @@ public final class TabManager {
     }
 
     private void updatePlayerName(Player player) {
-        String format = resolvePlaceholders(player, settings.getPlayerFormat(), false);
+        String format = resolvePlaceholders(player, normalizePlayerTemplate(settings.getPlayerFormat()), false);
         format = normalizeHex(format);
         Component headComponent = Component.empty();
         if (plugin.getSettings().isSkinRestorerHeads() && plugin.getSkinRestorerHeadHook() != null) {
@@ -93,13 +97,25 @@ public final class TabManager {
         if (!settings.isNameTagEnabled()) {
             player.customName(null);
             player.setCustomNameVisible(false);
+            clearNameTagTeams(player);
             return;
         }
-        String format = resolvePlaceholders(player, settings.getNameTagFormat(), false);
+        String format = resolvePlaceholders(player, normalizePlayerTemplate(settings.getNameTagFormat()), false);
+        if (plugin.getHeadMessageManager() != null) {
+            format = plugin.getHeadMessageManager().applyNameTagOverlay(player, format);
+        }
         format = normalizeHex(format);
-        Component component = buildComponentWithTokens(format, null, plugin.getStyledNameComponent(player));
+        Component component = buildComponentWithTokens(format, null, Component.text(player.getName()));
         player.customName(component);
         player.setCustomNameVisible(true);
+        applyScoreboardNameTag(player, format);
+    }
+
+    public void refreshNameTag(Player player) {
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+        updateNameTag(player);
     }
 
     private Comparator<Player> buildComparator(List<Player> players) {
@@ -198,6 +214,91 @@ public final class TabManager {
             return "";
         }
         return String.join("\n", lines);
+    }
+
+    private static String normalizePlayerTemplate(String template) {
+        if (template == null || template.isEmpty()) {
+            return "";
+        }
+        return template
+            .replace("%player_name%", "{player}")
+            .replace("%player%", "{player}");
+    }
+
+    private void applyScoreboardNameTag(Player subject, String format) {
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
+            Scoreboard board = viewer.getScoreboard();
+            if (board == null) {
+                continue;
+            }
+            Team team = board.getTeam(nameTagTeamName(subject));
+            if (team == null) {
+                team = board.registerNewTeam(nameTagTeamName(subject));
+            }
+            String[] parts = splitByPlayerToken(format);
+            String prefix = toSectionLegacy(parts[0]);
+            String suffix = toSectionLegacy(parts[1]);
+            setTeamText(team, prefix, suffix);
+            if (!team.hasEntry(subject.getName())) {
+                team.addEntry(subject.getName());
+            }
+        }
+    }
+
+    private void clearNameTagTeams(Player subject) {
+        String teamName = nameTagTeamName(subject);
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
+            Scoreboard board = viewer.getScoreboard();
+            if (board == null) {
+                continue;
+            }
+            Team team = board.getTeam(teamName);
+            if (team == null) {
+                continue;
+            }
+            team.removeEntry(subject.getName());
+            if (team.getEntries().isEmpty()) {
+                team.unregister();
+            }
+        }
+    }
+
+    private static String[] splitByPlayerToken(String format) {
+        if (format == null || format.isEmpty()) {
+            return new String[] {"", ""};
+        }
+        int idx = format.indexOf("{player}");
+        if (idx < 0) {
+            return new String[] {format, ""};
+        }
+        String prefix = format.substring(0, idx);
+        String suffix = format.substring(idx + "{player}".length());
+        return new String[] {prefix, suffix};
+    }
+
+    private static String toSectionLegacy(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        return SECTION.serialize(LEGACY.deserialize(text));
+    }
+
+    private static void setTeamText(Team team, String prefix, String suffix) {
+        try {
+            team.setPrefix(prefix);
+        } catch (IllegalArgumentException ex) {
+            team.setPrefix(prefix.length() > 64 ? prefix.substring(0, 64) : "");
+        }
+        try {
+            team.setSuffix(suffix);
+        } catch (IllegalArgumentException ex) {
+            team.setSuffix(suffix.length() > 64 ? suffix.substring(0, 64) : "");
+        }
+    }
+
+    private static String nameTagTeamName(Player player) {
+        String compact = player.getUniqueId().toString().replace("-", "");
+        return NAME_TAG_TEAM_PREFIX + compact.substring(0, 12);
     }
 
     private static String normalizeHex(String text) {

@@ -1,37 +1,42 @@
-# ------------------------------
-# ЧАТ / CHAT
-# Настройки локального и глобального чата / Local & global chat settings
+﻿# ------------------------------
+# CHAT
+# Local and global chat settings
 # ------------------------------
 chat:
-  # Дальность локального чата (в блоках) / Local chat distance (blocks)
+  # Local chat distance (blocks)
   local-distance: 100.0
-  # Символ для глобального чата / Prefix symbol for global chat
+  # Prefix symbol for global chat
   global-symbol: "!"
 
 # ------------------------------
-# ФУНКЦИИ / FEATURES
-# Переключатели поведения / Feature toggles
+# FEATURES
+# Feature toggles
 # ------------------------------
 features:
-  # Разные форматы для Bedrock и Java (по получателю) / Separate formats for Bedrock & Java (per viewer)
+  # Separate formats for Bedrock and Java (per viewer)
   separate-bedrock-format: true
-  # Использовать головы через SkinRestorer / Use heads via SkinRestorer
+  # Use heads via SkinRestorer
   skinrestorer-heads: true
-  # Интервал обновления голов (сек) / Head refresh interval (seconds)
+  # Head refresh interval (seconds)
   skinrestorer-refresh-seconds: 60
-  # Режим обновления голов / Head update mode
-  # interval = по таймеру / by timer
-  # command = по командам / by commands
-  # both = таймер + команды / timer + commands
+  # Head update mode: interval | command | both
   skinrestorer-update-mode: "interval"
-  # Команды, которые триггерят обновление / Commands that trigger update
+  # Commands that trigger head update
   skinrestorer-command-triggers:
     - "/skin"
     - "/sr"
-  # Сообщение входа / Join message
+  # Join message enabled
   join-message-enabled: true
-  # Сообщение выхода / Quit message
+  # Quit message enabled
   quit-message-enabled: true
+
+# ------------------------------
+# TRANSLATIONS
+# Language files in plugins/HakuneChat/translations
+# ------------------------------
+translations:
+  # Language code: en | ru
+  language: "ru"
 
 # ------------------------------
 # MOTD
@@ -45,62 +50,71 @@ motd:
 
 # ------------------------------
 # TELEGRAM
-# Мост чата / Chat bridge
+# Chat bridge
 # ------------------------------
 telegram:
-  # Включить мост / Enable bridge
+  # Enable bridge
   enabled: false
-  # Токен бота / Bot token
+  # Bot token
   token: "PASTE_BOT_TOKEN"
-  # ID чата / Chat ID
+  # Chat ID
   chat-id: "PASTE_CHAT_ID"
-  # Интервал опроса (сек) / Poll interval (seconds)
+  # Poll interval (seconds)
   poll-interval-seconds: 5
-  # Формат сообщения из Minecraft -> Telegram / Format from Minecraft to Telegram
+  # Format Minecraft -> Telegram
   format-to-telegram: "[{type}] {player}: {message}"
-  # Формат сообщения из Telegram -> Minecraft / Format from Telegram to Minecraft
+  # Format Telegram -> Minecraft
   format-from-telegram: "&7[&dTG&7] &f{user}&7: &f{message}"
 
 # ------------------------------
 # BEDROCK SKINS
-# Скины для Bedrock игроков на offline сервере / Bedrock skins on offline server
+# Bedrock skins on offline server
 # ------------------------------
 bedrock-skins:
-  # Включить модуль / Enable module
+  # Enable module
   enabled: true
-  # Режим обновления / Update mode (interval | command | both)
+  # Update mode: interval | command | both
   update-mode: "interval"
-  # Интервал обновления (сек) / Update interval (seconds)
+  # Update interval (seconds)
   update-interval-seconds: 60
-  # Команды, которые триггерят обновление / Commands that trigger update
+  # Commands that trigger update
   command-triggers:
     - "/skin"
     - "/sr"
-  # Применять скин к игроку сразу / Apply skin to player immediately
+  # Apply skin to player immediately
   apply-to-players: true
-  # Использовать скин для голов / Use bedrock skin for heads
+  # Use bedrock skin for heads
   use-for-heads: true
 
 # ------------------------------
 # VOICE INDICATOR
-# Индикатор мода PlasmoVoice / PlasmoVoice indicator
+# Voice chat indicator
 # ------------------------------
 voice-indicator:
-  # Включить индикатор / Enable indicator
+  # Enable indicator
   enabled: true
-  # Текст для игроков с модом / Text for players with the mod
-  on: "&a[VC]"
-  # Текст для игроков без мода / Text for players without the mod
-  off: "&c[NO]"
+  # Detector mode: auto | plasmovoice | simplevoicechat
+  # auto = PlasmoVoice first, then SimpleVoiceChat
+  detection: "auto"
+  # Text for players with voice chat
+  on: "&a🔊"
+  # Text for players without voice chat
+  off: "&c🔇"
 
 # ------------------------------
 # MINIGAMES
-# Мини-игры / Mini games
+# Minigame settings
 # ------------------------------
 minigames:
-  # Включить крестики-нолики / Enable tic-tac-toe
+  # Enable tic-tac-toe
   ttt-enabled: true
-  # Время жизни приглашения (сек) / Invite TTL (seconds)
+  # Invite TTL (seconds)
   ttt-invite-ttl-seconds: 60
-minigames:
-  ttt-enabled: true
+
+# ------------------------------
+# BSTATS METRICS
+# Plugin usage analytics
+# ------------------------------
+bstats:
+  # Enable bStats metrics
+  enabled: true

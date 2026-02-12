@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,11 +31,21 @@ public final class NickColorManager {
     }
 
     public Component getNameComponent(Player player) {
+        Component displayName = player.displayName();
         NameStyle style = styles.get(player.getUniqueId());
         if (style == null) {
+            if (displayName != null) {
+                return displayName;
+            }
             return Component.text(player.getName()).color(NamedTextColor.WHITE);
         }
-        return style.apply(player.getName());
+        String baseName = displayName == null
+            ? player.getName()
+            : PlainTextComponentSerializer.plainText().serialize(displayName);
+        if (baseName == null || baseName.isEmpty()) {
+            baseName = player.getName();
+        }
+        return style.apply(baseName);
     }
 
     public boolean setColor(Player player, String input) {

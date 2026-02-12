@@ -26,6 +26,7 @@ public final class ChatSettings {
     private final String pmFromBedrock;
     private final boolean tttEnabled;
     private final boolean voiceIndicatorEnabled;
+    private final String voiceDetectionMode;
     private final String voiceIndicatorOn;
     private final String voiceIndicatorOff;
     private final boolean motdEnabled;
@@ -57,6 +58,7 @@ public final class ChatSettings {
         String pmFromBedrock,
         boolean tttEnabled,
         boolean voiceIndicatorEnabled,
+        String voiceDetectionMode,
         String voiceIndicatorOn,
         String voiceIndicatorOff,
         boolean motdEnabled,
@@ -87,6 +89,7 @@ public final class ChatSettings {
         this.pmFromBedrock = pmFromBedrock;
         this.tttEnabled = tttEnabled;
         this.voiceIndicatorEnabled = voiceIndicatorEnabled;
+        this.voiceDetectionMode = voiceDetectionMode;
         this.voiceIndicatorOn = voiceIndicatorOn;
         this.voiceIndicatorOff = voiceIndicatorOff;
         this.motdEnabled = motdEnabled;
@@ -191,6 +194,10 @@ public final class ChatSettings {
 
     public boolean isVoiceIndicatorEnabled() {
         return voiceIndicatorEnabled;
+    }
+
+    public String getVoiceDetectionMode() {
+        return voiceDetectionMode;
     }
 
     public String getVoiceIndicatorOn() {

@@ -36,6 +36,7 @@ public final class MotdListener implements Listener {
         joined = normalizeHex(joined)
             .replace("{online}", String.valueOf(event.getNumPlayers()))
             .replace("{max}", String.valueOf(event.getMaxPlayers()));
+        joined = plugin.getPlaceholderHook().apply(null, joined);
         Component component = AMP_SERIALIZER.deserialize(joined);
         event.setMotd(SECTION_SERIALIZER.serialize(component));
     }

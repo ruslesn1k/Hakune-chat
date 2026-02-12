@@ -60,6 +60,7 @@ public final class ChatListener implements Listener {
         ChatSettings settings = plugin.getSettings();
         String resolvedMessage = plugin.getPlaceholderHook().apply(player, message);
         resolvedMessage = normalizeHex(resolvedMessage);
+        plugin.showHeadMessage(player, resolvedMessage);
 
         Component headComponent = Component.empty();
         if (settings.isSkinRestorerHeads() && plugin.getSkinRestorerHeadHook() != null) {
@@ -162,7 +163,7 @@ public final class ChatListener implements Listener {
 
         Component component = buildComponentWithHead(formatted, headComponent);
         Component playerComponent = buildPlayerComponent(viewer, sender);
-        return replacePlayerPlaceholder(component, playerComponent);
+        return plugin.withClickableLinks(replacePlayerPlaceholder(component, playerComponent));
     }
 
     private void sendListenLocal(Player sender, List<Player> localRecipients, String resolvedMessage, Component headComponent) {
@@ -196,7 +197,7 @@ public final class ChatListener implements Listener {
             if (!viewerBedrock) {
                 component = makeLlClickable(component, sender.getName());
             }
-            viewer.sendMessage(component);
+            viewer.sendMessage(plugin.withClickableLinks(component));
         }
     }
 
@@ -211,13 +212,13 @@ public final class ChatListener implements Listener {
         }
         String name = subject.getName();
         return base.clickEvent(ClickEvent.suggestCommand("/msg " + name + " "))
-            .hoverEvent(HoverEvent.showText(Component.text("Message " + name).color(NamedTextColor.GRAY)));
+            .hoverEvent(HoverEvent.showText(Component.text(plugin.trf("ui.message-hover", "name", name)).color(NamedTextColor.GRAY)));
     }
 
     private Component makeLlClickable(Component component, String playerName) {
         return component.replaceText(builder -> builder.matchLiteral("[LL]")
             .replacement(Component.text("[LL]").color(NamedTextColor.YELLOW)
                 .clickEvent(ClickEvent.runCommand("/tp " + playerName))
-                .hoverEvent(HoverEvent.showText(Component.text("Teleport to " + playerName).color(NamedTextColor.GRAY)))));
+                .hoverEvent(HoverEvent.showText(Component.text(plugin.trf("ui.tp-hover", "player", playerName)).color(NamedTextColor.GRAY)))));
     }
 }

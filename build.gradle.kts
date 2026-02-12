@@ -1,10 +1,10 @@
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 group = "com.hakune"
-version = "1.0.0"
+version = "2.1.0"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -22,6 +22,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 }
 
 tasks {
@@ -31,5 +32,6 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
+        relocate("org.bstats", "com.hakune.chat.libs.bstats")
     }
 }

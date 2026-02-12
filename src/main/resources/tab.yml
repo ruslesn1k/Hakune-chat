@@ -12,7 +12,9 @@ tab:
   player-format: "{head} {voice} {player}"
   name-tag:
     enabled: true
-    format: "&7[&a*&7] &f{player}"
+    # Supports color codes and hex colors in all static parts.
+    # {player} keeps nickcolor/gradient from /nickcolor.
+    format: "&7[&a*&7] {voice} {player}"
   group-placeholder: "%luckperms_primary_group_name%"
   sorting-types:
     - "GROUPS:owner,admin,mod,helper,builder,vip,default"

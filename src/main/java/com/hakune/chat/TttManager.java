@@ -110,14 +110,14 @@ public final class TttManager {
         boolean bedrock = plugin.getBedrockDetector().isBedrock(viewer.getUniqueId());
         if (bedrock) {
             viewer.sendMessage(renderBoardPlain(game));
-            viewer.sendMessage(Component.text("Use /ttt move <1-9>"));
+            viewer.sendMessage(Component.text(plugin.tr("ttt.board-usage")));
             return;
         }
         viewer.sendMessage(renderBoardClickable(game, viewer.getUniqueId()));
     }
 
     private Component renderBoardClickable(Game game, UUID viewer) {
-        Component result = Component.text("Tic Tac Toe").color(NamedTextColor.AQUA);
+        Component result = Component.text(plugin.tr("ttt.board-title")).color(NamedTextColor.AQUA);
         result = result.append(Component.newline());
         for (int row = 0; row < 3; row++) {
             Component line = Component.empty();
@@ -151,12 +151,12 @@ public final class TttManager {
             return base.color(NamedTextColor.DARK_GRAY);
         }
         return base.clickEvent(ClickEvent.runCommand("/ttt move " + (idx + 1)))
-            .hoverEvent(HoverEvent.showText(Component.text("Move to " + (idx + 1))));
+            .hoverEvent(HoverEvent.showText(Component.text(plugin.trf("ttt.move-hover", "slot", Integer.toString(idx + 1)))));
     }
 
     private Component renderBoardPlain(Game game) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Tic Tac Toe\n");
+        sb.append(plugin.tr("ttt.board-title")).append("\n");
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 int idx = row * 3 + col;

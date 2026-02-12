@@ -21,12 +21,39 @@ quit:
 private:
   formats:
     java:
-      to: "&7[&dPM&7] &fТы -> {player}&7: &f{message}"
-      from: "&7[&dPM&7] &f{player} -> ТЫ&7: &f{message}"
+      to: "&7[&dPM&7] &fYou -> {player}&7: &f{message}"
+      from: "&7[&dPM&7] &f{player} -> You&7: &f{message}"
     bedrock:
-      to: "&7[&dPM&7] &fТы -> {player}&7: &f{message}"
-      from: "&7[&dPM&7] &f{player} -> ТЫ&7: &f{message}"
+      to: "&7[&dPM&7] &fYou -> {player}&7: &f{message}"
+      from: "&7[&dPM&7] &f{player} -> You&7: &f{message}"
 notifications:
   # Placeholders: {platform} {name} {url} {title}
-  format: "&d[{platform}] &f{name}&7: &b{url}"
-  manual-format: "&d[STREAM] &f{name}&7: &b{url}"
+  format:
+    - "&d[{platform}] &f{name}"
+    - "&7Title: &f{title}"
+    - "&b{url}"
+  manual-format:
+    - "&d[STREAM] &f{name}"
+    - "&b{url}"
+
+head-message:
+  enabled: true
+  # nametag = message is merged into player name tag (follows perfectly while moving)
+  # armorstand = floating text entity above player
+  render-mode: "armorstand"
+  # armorstand follow mode:
+  # passenger = instant follow, y-offset is mostly ignored by Minecraft passenger system
+  # teleport = follows by teleport each tick, respects y-offset precisely
+  armorstand-follow-mode: "passenger"
+  duration-ticks: 60
+  y-offset: 2.2
+  # Placeholders: {player} {message} {voice} {world}
+  # Supports multiple lines:
+  # format:
+  #   - "&f{player}&7: &f{message}"
+  #   - "&7Additional line"
+  format:
+    - "{message}"
+  # Placeholders: {base} {player} {message} {voice} {world}
+  # Works when render-mode = nametag
+  name-tag-format: "{message}"
